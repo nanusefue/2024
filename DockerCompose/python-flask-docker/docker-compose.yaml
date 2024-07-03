@@ -1,0 +1,49 @@
+version: "3.8"
+include:
+  - redis.yaml
+services:
+  web:
+    build:
+      context: app
+      dockerfile: ./app.dockerfile
+    command: ["echo","HOLA MUNDO"]
+    environment:
+      - mysql_host=mysql
+      - redis_host=redis
+    ports:
+      - 3000:3000
+    networks:
+      - front-tier
+      - back-tier
+    depends_on:
+      - mysql
+      - micache
+  mysql:
+    image: mysql
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      back-tier:
+          ipv4_address: 100.82.0.10
+    ports:
+      - 3306:3306
+    env_file:
+      - .env
+  micache:
+    image: redis
+    networks:
+      - back-tier
+networks:
+  front-tier:
+    name: mynet
+    external: true
+  back-tier:
+    ipam:
+      driver: default
+      config:
+        - subnet: "100.82.0.0/16"
+
+volumes:
+  db-data:
+    name: mysqldata
+    external: true

@@ -1,0 +1,5 @@
+service:
+  redis:
+    image: sergiobeltranguerrero/java-maven
+    networks:
+      - back

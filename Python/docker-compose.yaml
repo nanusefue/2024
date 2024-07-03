@@ -1,0 +1,39 @@
+services:
+  java:
+    image: sergiobeltranguerrero/java-maven
+    networks:
+      - back
+  front:
+    image: python-front
+    build: . 
+    volumes:
+    - .:/app 
+    depends_on:
+      - java
+      - api
+    networks:
+      - front
+  api: 
+    image: python-api
+    build: 
+      context: app
+      dockerfile: Dockerfile.u     
+    depends_on:
+      - java
+    networks:
+      - front
+      - back
+  mysql:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=123458
+    networks:
+      - back
+  redis:
+    image: redis:7.2-bookworm
+
+
+
+networks:
+  front:
+  back:

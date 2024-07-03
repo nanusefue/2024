@@ -1,0 +1,6 @@
+version: "3.8"
+services:
+  micache:
+    image: redis
+    networks:
+      - back-tier
